@@ -106,9 +106,9 @@ opt_mid <- function(dist_mat, group = colnames(dist_mat)[1], params = c(0.0, 1.0
   
   if(opt_val$convergence != 0){
     warning(
-      paste0(
+      paste(
         "optim() did not converge, try changing initial values of cut_off and delta from their current values of, ",
-        params)
+        params[1], params[2])
     )
   }
   
@@ -232,7 +232,8 @@ permute_fit <- function(dist_mat, groups = unique(colnames(dist_mat)), params = 
     warning(
       paste(
         "optim() did not converge for some permutations, try changing initial values of cut_off and delta from their current values of, ",
-        params[1], params[2])
+        params[1], params[2]
+        )
     )
   }
   

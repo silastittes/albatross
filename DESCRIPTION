@@ -1,6 +1,6 @@
 Package: albatross
 Title: Estimates Parameters Using a Square Distance Matrix to Learn About Variation Within and Among Groups.
-Version: 0.0.0.9000
+Version: 0.0.0.9100
 Authors@R: c(person("Silas", "Tittes", email = "silas.tittes@gmail.com", role = c("aut", "cre")),
 	     person("Jack", "Darcy", email = "jack.l.darcy@gmail.com", role = "aut"))
 Author: Silas Tittes [aut, cre],
