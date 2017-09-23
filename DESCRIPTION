@@ -1,0 +1,13 @@
+Package: albatross
+Title: Estimates Parameters Using a Square Distance Matrix to Learn About Variation Within and Among Groups.
+Version: 0.0.0.9000
+Authors@R: c(person("Silas", "Tittes", email = "silas.tittes@gmail.com", role = c("aut", "cre")),
+	     person("Jack", "Darcy", email = "jack.l.darcy@gmail.com", role = "aut"))
+Author: Silas Tittes [aut, cre],
+  Jack Darcy [aut],
+Description: Using a labelled, square distance matrix, albatross implements a method to quantify how statistically informative a data set's discrete identifiers are. albatross provides a set of parameter estimates that convey infomation about group-level variation.
+Depends: R (>= 3.4.1), tidyverse, parallel
+License: MIT
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1.9000
