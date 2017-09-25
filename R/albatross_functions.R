@@ -54,7 +54,7 @@ opt_cut <- function(params, dist_mat, group){
   cutoff_test <- dist_mat <= cut_off
   intest <- mean(cutoff_test[in_cells, in_cells], na.rm = T)
   outtest <- 1 - mean(cutoff_test[out_cells, in_cells], na.rm = T)
-  return(cut_off ^ delta + (intest - outtest)^2)
+  return(log(cut_off ^ delta + (intest - outtest)^2))
 }
 
 
