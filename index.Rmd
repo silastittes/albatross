@@ -6,3 +6,9 @@ output:
 
 
 <center><img src="logo1.png"/<center/>
+
+
+```{r}
+plot(1,1)
+```
+
