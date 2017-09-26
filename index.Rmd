@@ -7,8 +7,11 @@ output:
 
 <center><img src="logo1.png"/<center/>
 
+**PAGE UNDER DEVELOPMENT -- COME BACK SOON OR CONTACT silas(dot)tittes(at)gmail(dot)com WITH QUESTIONS**
 
-```{r}
-plot(1,1)
+Install `albatross` with:
+```{r, eval=FALSE}
+devtools::install_github("silastittes/albatross")
+library(albatross)
 ```
 
