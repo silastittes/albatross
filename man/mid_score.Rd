@@ -26,8 +26,8 @@ groups <- 5
 n_groups <- 5
 n_obs <- groups * n_groups
 group_names <- rep(letters[1:groups], each = 5)
-example_dist <- sample(1:100, size = 25) \%>\% 
-  dist \%>\% 
+example_dist <- sample(1:100, size = 25) \%>\%
+  dist \%>\%
 as.matrix
 example_dist <- example_dist/max(example_dist)
 colnames(example_dist) <- group_names
