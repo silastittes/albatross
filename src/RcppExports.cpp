@@ -6,13 +6,13 @@
 using namespace Rcpp;
 
 // dist_one
-NumericVector dist_one(NumericMatrix X, int x);
+NumericVector dist_one(NumericMatrix X, NumericVector x);
 RcppExport SEXP _albatross_dist_one(SEXP XSEXP, SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericMatrix >::type X(XSEXP);
-    Rcpp::traits::input_parameter< int >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(dist_one(X, x));
     return rcpp_result_gen;
 END_RCPP

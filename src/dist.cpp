@@ -16,7 +16,7 @@ using namespace Rcpp;
 
 
 
-//' Compute Euclidean distances between a specified row and all other row
+//' Compute Euclidean distances between a specified row and all other rows
 //' Returns an unscaled positive numeric vector
 //'
 //'
@@ -25,14 +25,13 @@ using namespace Rcpp;
 //' @param x a row index
 //' @export
 // [[Rcpp::export]]
-NumericVector dist_one(NumericMatrix X, int x) {
-  x = x - 1;
+NumericVector dist_one(NumericMatrix X, NumericVector x) {
   int nrow = X.nrow(), ncol = X.ncol();
   NumericVector out(nrow);
 
   for(int i = 0; i < nrow; ++i) {
     for(int j = 0; j < ncol; ++j) {
-      out[i] += pow(X(i,j) - X(x,j), 2.0);
+      out[i] += pow(X(i,j) - x(j), 2.0);
     }
     out[i] = sqrt(out[i]);
   }
@@ -61,7 +60,8 @@ NumericMatrix dist_all(NumericMatrix X) {
       out(i,j) = sqrt(out(i,j));
     }
   }
-  return out/max(out);
+  //return out/max(out);
+  return out;
 }
 
 

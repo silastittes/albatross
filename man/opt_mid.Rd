@@ -7,7 +7,7 @@
 opt_mid(dist_mat, group = colnames(dist_mat)[1], params = c(0, 1))
 }
 \arguments{
-\item{dist_mat}{A [0, 1] bounded square distance matrix with column names matching groups.}
+\item{dist_mat}{A square distance matrix with column names matching groups.}
 
 \item{group}{A character string specifying group of interest. Default if first group in matrix.}
 

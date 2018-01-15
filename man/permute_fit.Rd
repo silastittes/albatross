@@ -8,7 +8,7 @@ permute_fit(dist_mat, groups = unique(colnames(dist_mat)), params = c(0, 1),
   n_permutes = 10)
 }
 \arguments{
-\item{dist_mat}{A [0, 1] bounded square distance matrix with column names matching groups.}
+\item{dist_mat}{A square distance matrix with column names matching groups.}
 
 \item{groups}{A character vector specifying groups of interest. Defualt is all groups.}
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{dist_one}
 \alias{dist_one}
-\title{Compute Euclidean distances between a specified row and all other row
+\title{Compute Euclidean distances between a specified row and all other rows
 Returns an unscaled positive numeric vector}
 \usage{
 dist_one(X, x)
@@ -13,6 +13,6 @@ dist_one(X, x)
 \item{x}{a row index}
 }
 \description{
-Compute Euclidean distances between a specified row and all other row
+Compute Euclidean distances between a specified row and all other rows
 Returns an unscaled positive numeric vector
 }

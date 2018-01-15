@@ -7,17 +7,17 @@
 mid_score(dist_mat, cut_off = 0, group = colnames(dist_mat)[1])
 }
 \arguments{
-\item{dist_mat}{A [0, 1] bounded square distance matrix with column names matching groups.}
+\item{dist_mat}{A square distance matrix with column names matching groups.}
 
-\item{cut_off}{A [0, 1] bounded scalar that specifies cutoff. Defaults to 0.}
+\item{cut_off}{A scalar that specifies cutoff. Defaults to 0.}
 
 \item{group}{A character string specifying group of interest. Default if first group in matrix.}
 }
 \value{
-returns [0, 1] bounded midpoint
+returns midpoint
 }
 \description{
-For a given [0,1] cutoff value, this function calculates the midpoint between within group clustering and out-of-group exclusion.
+For a given cutoff value, this function calculates the midpoint between within group clustering and out-of-group exclusion.
 It's primary purpose is internal use for other functions.
 }
 \examples{
