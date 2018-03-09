@@ -1,6 +1,7 @@
 Package: albatross
+Type: Package
 Title: Estimates Parameters Using a Square Distance Matrix to Learn About Variation Within and Among Groups.
-Version: 0.0.0.9200
+Version: 0.0.0.9400
 Authors@R: c(person("Silas", "Tittes", email = "silas.tittes@gmail.com", role = c("aut", "cre")),
 	     person("Jack", "Darcy", email = "jack.l.darcy@gmail.com", role = "aut"))
 Author: Silas Tittes [aut, cre],
@@ -11,3 +12,6 @@ License: MIT
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1.9000
+LinkingTo: Rcpp
+Imports: Rcpp
+
