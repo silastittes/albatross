@@ -218,7 +218,7 @@ permute_fit <- function(dist_mat, groups = unique(colnames(dist_mat)), params = 
         permute_dists <- dist_mat
         permute_names <- sample(colnames(dist_mat), replace = F)
         colnames(permute_dists) <- permute_names
-        rownames(permute_dists) <- permute_names
+        #rownames(permute_dists) <- permute_names
 
         x_permute_df <- groups %>%
           map_df(function(focal){
