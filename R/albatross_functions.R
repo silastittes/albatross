@@ -239,3 +239,86 @@ permute_fit <- function(dist_mat, groups = unique(colnames(dist_mat)), params = 
 
   return(permute_df)
 }
+
+#' Calculate mid value statistic for each group in the distance matrix over a grid of cut offs 
+#' 
+#' @import tidyverse
+#' @param dist_mat A [0, 1] bounded square distance matrix with column names matching groups.
+#' @param cut_offs An ordered (low to high) sequence of cut_offs to calculate mid values.
+#' @param group A character vector specifying groups of interest. Defualt is all groups.
+#' @param res The number of digits to round mid values to. Helpful when plateaus occur.
+#' 
+#' @return A tibble containing the following columns:
+#' cut_offs - [0,1] cut off values input by user
+#' mids - the mid values for each cut off
+#' group - the group id taken from the column names of the input distance matrix
+#' @export
+#' 
+#' @examples 
+#' sepal_dist <- iris$Sepal.Width %>% dist() %>% as.matrix()
+#' sepal_dist <- sepal_dist/max(sepal_dist)
+#' colnames(sepal_dist) <- iris$Species
+#' cut_df <- man_multi(dist_mat = sepal_dist, res = 2)
+#' ggplot(cut_df, aes(cut_offs, cut_df$mids, colour = group)) + 
+#' geom_line()
+
+
+man_multi <- function(
+  dist_mat, 
+  cut_offs = seq(0, 1, length.out = 100), 
+  group = unique(colnames(dist_mat)), 
+  res = 3){
+  
+  group %>% map_df(function(g){
+    mids <- cut_offs %>% 
+      map_dbl(~ mid_score(dist_mat = dist_mat, cut_off = .x, group = g)) %>%
+      round(res)
+    tibble(cut_offs = cut_offs, mids = mids, group = rep(g, length(cut_offs)))
+  })
+}
+
+#' Create useful summary statistics from the output of man_multi
+#'
+#' @import tidyverse
+#' @param cut_df The output of man_multi() (?man_multi() for further details)
+#' @return A tibble contain a row for each group id returned by man_multi():
+#' cut_off - The miniumum cut off value of the the max mid value
+#' plateau - The the numer cut off values that with the same max mid value
+#' mid - The max mid value (1.0 means perfectly grouped)
+#' mid_sum - The sum of the mid values across all considered cut_offs, which is useful for quantifying how isolated the groups are
+#' rel_sum - The mid_sum scores, scaled by the maximum mid_sum. 
+#' @export
+#' 
+#' @examples 
+#' sepal_dist <- iris$Sepal.Width %>% dist() %>% as.matrix()
+#' sepal_dist <- sepal_dist/max(sepal_dist)
+#' colnames(sepal_dist) <- iris$Species
+#' cut_df <- man_multi(dist_mat = sepal_dist, res = 2)
+#' summarise_multi(cut_df)
+
+summarise_multi <- function(cut_df){
+  cut_df %>%
+    group_by(group) %>%
+    summarise(cut_off = cut_offs[which.max(mids)],
+              plateau = sum(mids == max(mids)),
+              mid =  max(mids),
+              mid_sum = sum(mids)) %>%
+    mutate(rel_sum = mid_sum/max(mid_sum))
+}
+
+
+# summarise_multi <- function(cut_df){
+#   cut_df %>% 
+#     group_by(group) %>%
+#     summarise(cut_off = ifelse( abs(min(mids) - 0.5) < abs(max(mids) - 0.5),
+#                                cut_offs[which.max(mids)], 
+#                                cut_offs[which.min(mids)]),
+#               plateau = ifelse( abs(min(mids) - 0.5) < abs(max(mids) - 0.5), 
+#                                sum(mids == max(mids)),
+#                                sum(mids == min(mids))),
+#               mid = ifelse( abs(min(mids) - 0.5) < abs(max(mids) - 0.5), 
+#                            max(mids), min(mids)),
+#               mid_sum = ifelse(abs(min(mids) - 0.5) < abs(max(mids) - 0.5), 
+#                                sum(mids), sum(1 - mids))) %>%
+#     mutate(rel_sum = mid_sum/max(mid_sum))
+# }

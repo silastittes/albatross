@@ -2,11 +2,13 @@
 
 export(dist_all)
 export(dist_one)
+export(man_multi)
 export(mid_score)
 export(opt_cut)
 export(opt_mid)
 export(opt_mid_multi)
 export(permute_fit)
+export(summarise_multi)
 import(parallel)
 import(tidyverse)
 importFrom(Rcpp,sourceCpp)
