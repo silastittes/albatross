@@ -21,8 +21,8 @@
 #' colnames(example_dist) <- group_names
 #' mid_score(example_dist, cut_off = 0.2, group_names[1])
 
-mid_score <- function(dist_mat, cut_off = 0, group = colnames(dist_mat)[1]){
-  if(max(dist_mat) > 1){
+mid_score <- function(dist_mat, cut_off = 0, group = colnames(dist_mat)[1], scale = F){
+  if(scale){
     warning(
       paste0(
         "The input matrix was not [0,1] bounded. Dividing all values by max(",
@@ -267,11 +267,12 @@ man_multi <- function(
   dist_mat, 
   cut_offs = seq(0, 1, length.out = 100), 
   group = unique(colnames(dist_mat)), 
-  res = 3){
+  res = 3,
+  scale = F){
   
   group %>% map_df(function(g){
     mids <- cut_offs %>% 
-      map_dbl(~ mid_score(dist_mat = dist_mat, cut_off = .x, group = g)) %>%
+      map_dbl(~ mid_score(dist_mat = dist_mat, cut_off = .x, group = g, scale = scale)) %>%
       round(res)
     tibble(cut_offs = cut_offs, mids = mids, group = rep(g, length(cut_offs)))
   })
@@ -297,12 +298,13 @@ man_multi <- function(
 #' summarise_multi(cut_df)
 
 summarise_multi <- function(cut_df){
+  d_cut <- cut_df$cut_offs[2] - cut_df$cut_offs[1]
   cut_df %>%
     group_by(group) %>%
     summarise(cut_off = cut_offs[which.max(mids)],
               plateau = sum(mids == max(mids)),
               mid =  max(mids),
-              mid_sum = sum(mids)) %>%
+              mid_sum = sum(mids)*d_cut) %>%
     mutate(rel_sum = mid_sum/max(mid_sum))
 }
 
