@@ -198,6 +198,108 @@ permute_fit <- function(dist_mat, groups = unique(colnames(dist_mat)), n_permute
       }))
 }
 
+#' Cross-validated mid_point for multiple groups
+#'
+#' Estimates unbiased mid_point values using k-fold cross-validation to correct
+#' for the optimistic bias introduced by finding the optimal cutoff on the same
+#' data used to evaluate it. For each fold, the cutoff is learned on training
+#' individuals and evaluated on held-out individuals via cross-distances.
+#' @import tidyverse
+#' @param dist_mat A [0, 1] bounded square distance matrix with column names matching groups.
+#' @param groups A character vector specifying groups of interest. Default is all groups.
+#' @param k Number of folds. Use k = nrow(dist_mat) for leave-one-out CV. Default is 5.
+#' @return tibble containing a row for each group with columns:
+#' focal_group - the input group
+#' cv_mid_point - cross-validated mid_point; an unbiased estimate of classification accuracy at the optimal cutoff.
+#' k - number of folds used.
+#' @export
+#'
+#' @examples
+#' set.seed(123)
+#' sepal_dist <- iris$Sepal.Length %>% dist %>% as.matrix
+#' sepal_dist <- sepal_dist/max(sepal_dist)
+#' colnames(sepal_dist) <- iris$Species
+#' cv_mid_multi(sepal_dist)
+
+cv_mid_multi <- function(dist_mat, groups = unique(colnames(dist_mat)), k = 5){
+
+  if(max(dist_mat) > 1){
+    warning(
+      paste0(
+        "The input matrix was not [0,1] bounded. Dividing all values by max(",
+        deparse(substitute(dist_mat)),
+        ")."
+      )
+    )
+    dist_mat <- dist_mat/max(dist_mat)
+  }
+
+  n          <- ncol(dist_mat)
+  labels_all <- colnames(dist_mat)
+
+  # stratified fold assignment: balanced within each group
+  fold_ids <- integer(n)
+  for(g in unique(labels_all)){
+    idx <- which(labels_all == g)
+    fold_ids[idx] <- sample(rep(seq_len(k), length.out = length(idx)))
+  }
+
+  fold_scores <- map_df(seq_len(k), function(f){
+    test_idx  <- which(fold_ids == f)
+    train_idx <- which(fold_ids != f)
+
+    train_mat           <- dist_mat[train_idx, train_idx, drop = FALSE]
+    colnames(train_mat) <- labels_all[train_idx]
+    rownames(train_mat) <- labels_all[train_idx]
+
+    map_df(groups, function(g){
+      if(!(g %in% colnames(train_mat)))
+        return(tibble(focal_group = g, fold = f, score = NA_real_))
+
+      cut <- opt_mid(train_mat, g)$cut_off
+
+      test_g   <- test_idx[labels_all[test_idx]  == g]
+      train_g  <- train_idx[labels_all[train_idx] == g]
+      train_ng <- train_idx[labels_all[train_idx] != g]
+
+      if(length(test_g) == 0 || length(train_g) == 0 || length(train_ng) == 0)
+        return(tibble(focal_group = g, fold = f, score = NA_real_))
+
+      intest  <- mean(dist_mat[test_g,  train_g,  drop = FALSE] <= cut)
+      outtest <- 1 - mean(dist_mat[test_g, train_ng, drop = FALSE] <= cut)
+
+      tibble(focal_group = g, fold = f, score = (intest + outtest) / 2)
+    })
+  })
+
+  fold_scores %>%
+    group_by(focal_group) %>%
+    summarise(cv_mid_point = mean(score, na.rm = TRUE), k = k, .groups = "drop")
+}
+
+
+#' Cross-validated mid_point for a single group
+#'
+#' Wrapper around cv_mid_multi for a single group. See ?cv_mid_multi for full details.
+#' @import tidyverse
+#' @param dist_mat A [0, 1] bounded square distance matrix with column names matching groups.
+#' @param group A character string specifying group of interest. Default is first group in matrix.
+#' @param k Number of folds. Use k = nrow(dist_mat) for leave-one-out CV. Default is 5.
+#' @return tibble with columns focal_group, cv_mid_point, k.
+#' @export
+#'
+#' @examples
+#' set.seed(123)
+#' sepal_dist <- iris$Sepal.Length %>% dist %>% as.matrix
+#' sepal_dist <- sepal_dist/max(sepal_dist)
+#' colnames(sepal_dist) <- iris$Species
+#' cv_mid(sepal_dist, "setosa")
+
+cv_mid <- function(dist_mat, group = colnames(dist_mat)[1], k = 5){
+  cv_mid_multi(dist_mat, groups = group, k = k)
+}
+
+
 #' Calculate mid value statistic for each group in the distance matrix over a grid of cut offs 
 #' 
 #' @import tidyverse
