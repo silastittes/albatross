@@ -241,8 +241,8 @@ man_multi <- function(
 #' @import tidyverse
 #' @param cut_df The output of man_multi() (?man_multi() for further details)
 #' @return A tibble contain a row for each group id returned by man_multi():
-#' cut_off - The miniumum cut off value of the the max mid value
-#' plateau - The the numer cut off values that with the same max mid value
+#' cut_off - The minimum cut off value of the the max mid value
+#' plateau - The the number cut off values that with the same max mid value
 #' mid - The max mid value (1.0 means perfectly grouped)
 #' mid_sum - The sum of the mid values across all considered cut_offs, which is useful for quantifying how isolated the groups are
 #' rel_sum - The mid_sum scores, scaled by the maximum mid_sum. 
